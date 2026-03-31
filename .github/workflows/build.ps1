@@ -1,41 +1,60 @@
 param (
     [string]$BuildName = "Weekly-Build",
-    [string]$OutputPath = "$PSScriptRoot\..\..\Builds" # Default location
+    # This magic line finds the real Downloads folder for the current user
+    [string]$OutputPath = "$HOME\Downloads" 
 )
 
-# 1. FIND THE ENGINE (Auto-detect)
-$RegPath = "HKLM:\SOFTWARE\EpicGames\Unreal Engine\5.6"
-$InstallDir = (Get-ItemProperty -Path $RegPath -ErrorAction SilentlyContinue).InstalledDirectory
-$UE_PATH = Join-Path $InstallDir "Engine\Build\BatchFiles\RunUAT.bat"
+# 1. FIND THE ENGINE (Now with 3-way Auto-Detect)
+Write-Host "Searching for Unreal Engine 5.6..."
+$UE_PATH = ""
+$RegPaths = @(
+    "HKLM:\SOFTWARE\EpicGames\Unreal Engine\5.6",
+    "HKCU:\Software\Epic Games\Unreal Engine\Builds"
+)
+
+foreach ($Path in $RegPaths) {
+    $Dir = (Get-ItemProperty -Path $Path -ErrorAction SilentlyContinue).InstalledDirectory
+    if ($Dir) { $UE_PATH = Join-Path $Dir "Engine\Build\BatchFiles\RunUAT.bat"; break }
+}
+
+# Final Fallback: Common School Install Path
+if (-not (Test-Path $UE_PATH)) {
+    $UE_PATH = "C:\Program Files\Epic Games\UE_5.6\Engine\Build\BatchFiles\RunUAT.bat"
+}
 
 if (-not (Test-Path $UE_PATH)) {
-    Write-Error "Unreal Engine 5.6 not found. Please check your installation."
+    Write-Error "CRITICAL: Could not find UE 5.6. Check if it's installed!"
     exit 1
 }
 
-# 2. SET UP DIRECTORIES
-$PROJECT_PATH = Resolve-Path "$PSScriptRoot\..\..\*.uproject" # Auto-finds your .uproject file
-$FINAL_PATH = Join-Path $OutputPath $BuildName
+# 2. RESOLVE PROJECT
+# Finds the .uproject file automatically in the root of your repo
+$PROJECT_FILE = Get-ChildItem -Path "$PSScriptRoot\..\..\*.uproject" | Select-Object -First 1
+if (-not $PROJECT_FILE) { Write-Error "No .uproject file found!"; exit 1 }
 
-Write-Host "--- BUILD STARTING ---"
-Write-Host "Project: $PROJECT_PATH"
-Write-Host "Destination: $FINAL_PATH"
+$FINAL_PATH = Join-Path $OutputPath "UE5_Builds\$BuildName"
+
+Write-Host "--- BUILD CONFIG ---"
+Write-Host "Engine: $UE_PATH"
+Write-Host "Project: $($PROJECT_FILE.FullName)"
+Write-Host "Output: $FINAL_PATH"
 
 # 3. CLEAN OLD DATA
 if (Test-Path $FINAL_PATH) { Remove-Item -Recurse -Force $FINAL_PATH }
 New-Item -ItemType Directory -Path $FINAL_PATH -Force | Out-Null
 
-# 4. RUN UNREAL BUILD
+# 4. RUN UNREAL BUILD (The heavy lifting)
 & $UE_PATH BuildCookRun `
--project=$PROJECT_PATH `
+-project="$($PROJECT_FILE.FullName)" `
 -noP4 -platform=Win64 -clientconfig=Development `
 -cook -allmaps -build -stage -pak -archive `
--archivedirectory=$FINAL_PATH
+-archivedirectory="$FINAL_PATH"
 
 # 5. ZIP FOR SUBMISSION
 $ZipFile = Join-Path $OutputPath "$BuildName.zip"
+Write-Host "Zipping build to $ZipFile..."
 if (Test-Path $ZipFile) { Remove-Item $ZipFile }
 Compress-Archive -Path "$FINAL_PATH\Windows\*" -DestinationPath $ZipFile
 
 Write-Host "--- FINISHED ---"
-Write-Host "Your build is ready at: $ZipFile"
+Write-Host "Success! Check your Downloads folder."
