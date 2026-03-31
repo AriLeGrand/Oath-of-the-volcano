@@ -1,24 +1,20 @@
-name: UE5.6 Manual Build
-
 on:
-  # This is the "On Command" magic
   workflow_dispatch:
     inputs:
       build_name:
-        description: 'Name of the build (e.g., v1.0-Week3)'
-        required: true
-        default: 'Weekly-Build'
+        description: 'Build Name'
+        default: 'Week-3-Build'
+      output_path:
+        description: 'Where to save (On the Runner machine)'
+        default: 'C:\Users\Student\Desktop\MyBuilds'
 
 jobs:
-  build-windows:
+  build:
     runs-on: self-hosted
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-
-      - name: Run Build Script
+      - uses: actions/checkout@v4
+      - name: Build
         run: |
-          # We pass the manual input name to our PowerShell script
-          powershell -ExecutionPolicy Bypass -File .github/scripts/build.ps1 -BuildName "${{ github.event.inputs.build_name }}"
+          powershell -ExecutionPolicy Bypass -File .github/scripts/build.ps1 `
+          -BuildName "${{ github.event.inputs.build_name }}" `
+          -OutputPath "${{ github.event.inputs.output_path }}"
