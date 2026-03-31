@@ -18,7 +18,7 @@ foreach ($Path in $RegPaths) {
 
 # Final Fallback: Common School Install Path
 if (-not (Test-Path $UE_PATH)) {
-    $UE_PATH = "C:\Program Files\Epic Games\UE_5.6\Engine\Build\BatchFiles\RunUAT.bat"
+    $UE_PATH = "C:\Program Files\Epic Games\5.6\Engine\Build\BatchFiles\RunUAT.bat"
 }
 
 if (-not (Test-Path $UE_PATH)) {
