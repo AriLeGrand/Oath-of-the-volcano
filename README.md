@@ -1,6 +1,8 @@
-# 🌋 Oath of the Volcano - Build System / Système de Compilation
+# 🌋 Oath of the Volcano - Build System
 
 This project includes an automated PowerShell script to package the game for **Unreal Engine 5.6**. 
+
+
 Ce projet inclut un script PowerShell automatisé pour packager le jeu sous **Unreal Engine 5.6**.
 
 ---
@@ -20,6 +22,17 @@ Ce projet inclut un script PowerShell automatisé pour packager le jeu sous **Un
    * Type: `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process`
    * Drag the `build.ps1` file into that window and press **Enter**.
 4. **Output:** Once finished, the packaged game will be zipped and placed in your **Downloads** folder.
+---
+
+## 🛠 Troubleshooting
+
+| Issue | Solution |
+| :--- | :--- |
+| **"UE 5.6 not found"** | Edit `build.ps1` and update the `$UE_PATH` variable with the correct path to `RunUAT.bat`.|
+| **"Disk Full"** | Ensure the build is running on a local SSD (C: or D:), not a network drive.|
+| **"Cook Failed"** | Check the console logs for missing assets or shader errors.|
+
+> **Note:** The build process can take between 15 to 60 minutes depending on the hardware. 
 
 ---
 
@@ -45,11 +58,10 @@ Ce projet inclut un script PowerShell automatisé pour packager le jeu sous **Un
 
 | Issue / Problème | Solution |
 | :--- | :--- |
-| **"UE 5.6 not found"** | Edit `build.ps1` and update the `$UE_PATH` variable with the correct path to `RunUAT.bat`. / Modifiez `build.ps1` et mettez à jour la variable `$UE_PATH` avec le chemin correct vers `RunUAT.bat`. |
-| **"Disk Full"** | Ensure the build is running on a local SSD (C: or D:), not a network drive. / Assurez-vous que le build s'exécute sur un SSD local (C: ou D:), pas sur un lecteur réseau. |
-| **"Cook Failed"** | Check the console logs for missing assets or shader errors. / Vérifiez les logs de la console pour des assets manquants ou des erreurs de shaders. |
+| **"UE 5.6 not found"** | Modifiez `build.ps1` et mettez à jour la variable `$UE_PATH` avec le chemin correct vers `RunUAT.bat`. |
+| **"Disk Full"** | Assurez-vous que le build s'exécute sur un SSD local (C: ou D:), pas sur un lecteur réseau. |
+| **"Cook Failed"** | Vérifiez les logs de la console pour des assets manquants ou des erreurs de shaders. |
 
 ---
 
-> **Note:** The build process can take between 15 to 60 minutes depending on the hardware. 
 > **Note :** Le processus de compilation peut prendre entre 15 et 60 minutes selon la puissance de la machine.
