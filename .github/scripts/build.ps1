@@ -1,5 +1,5 @@
 param (
-    [string]$BuildName = "Weekly-Build",
+    [string]$BuildName = "Oath-of-the-volcano",
     # This magic line finds the real Downloads folder for the current user
     [string]$OutputPath = "$HOME\Downloads" 
 )
