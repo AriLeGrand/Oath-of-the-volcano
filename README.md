@@ -1,6 +1,3 @@
-"# Oath-of-the-volcano" 
-
-
 # 🌋 Oath of the Volcano - Build System / Système de Compilation
 
 This project includes an automated PowerShell script to package the game for **Unreal Engine 5.6**. 
