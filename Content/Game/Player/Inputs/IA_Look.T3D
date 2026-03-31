@@ -1,0 +1,3 @@
+Begin Object Class=/Script/EnhancedInput.InputAction Name="IA_Look" ExportPath="/Script/EnhancedInput.InputAction'/Game/Input/Actions/IA_Look.IA_Look'"
+   ValueType=Axis2D
+End Object
