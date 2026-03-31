@@ -1,27 +1,41 @@
 param (
-    [string]$BuildName = "ManualBuild"
+    [string]$BuildName = "Weekly-Build",
+    [string]$OutputPath = "$PSScriptRoot\..\..\Builds" # Default location
 )
 
-$UE_PATH = "C:\Program Files\Epic Games\UE_5.6\Engine\Build\BatchFiles\RunUAT.bat"
-$PROJECT_PATH = "$PSScriptRoot\..\..\YourProjectName.uproject"
-$BASE_ARCHIVE_PATH = "$PSScriptRoot\..\..\Builds"
-$FINAL_PATH = "$BASE_ARCHIVE_PATH\$BuildName"
+# 1. FIND THE ENGINE (Auto-detect)
+$RegPath = "HKLM:\SOFTWARE\EpicGames\Unreal Engine\5.6"
+$InstallDir = (Get-ItemProperty -Path $RegPath -ErrorAction SilentlyContinue).InstalledDirectory
+$UE_PATH = Join-Path $InstallDir "Engine\Build\BatchFiles\RunUAT.bat"
 
-Write-Host "Starting Build: $BuildName"
+if (-not (Test-Path $UE_PATH)) {
+    Write-Error "Unreal Engine 5.6 not found. Please check your installation."
+    exit 1
+}
 
-# 1. Clean old build folder if it exists
+# 2. SET UP DIRECTORIES
+$PROJECT_PATH = Resolve-Path "$PSScriptRoot\..\..\*.uproject" # Auto-finds your .uproject file
+$FINAL_PATH = Join-Path $OutputPath $BuildName
+
+Write-Host "--- BUILD STARTING ---"
+Write-Host "Project: $PROJECT_PATH"
+Write-Host "Destination: $FINAL_PATH"
+
+# 3. CLEAN OLD DATA
 if (Test-Path $FINAL_PATH) { Remove-Item -Recurse -Force $FINAL_PATH }
+New-Item -ItemType Directory -Path $FINAL_PATH -Force | Out-Null
 
-# 2. Run the actual Unreal Build
+# 4. RUN UNREAL BUILD
 & $UE_PATH BuildCookRun `
 -project=$PROJECT_PATH `
 -noP4 -platform=Win64 -clientconfig=Development `
 -cook -allmaps -build -stage -pak -archive `
 -archivedirectory=$FINAL_PATH
 
-# 3. Zip it up for easy sharing
-$ZipFile = "$BASE_ARCHIVE_PATH\$BuildName.zip"
+# 5. ZIP FOR SUBMISSION
+$ZipFile = Join-Path $OutputPath "$BuildName.zip"
 if (Test-Path $ZipFile) { Remove-Item $ZipFile }
 Compress-Archive -Path "$FINAL_PATH\Windows\*" -DestinationPath $ZipFile
 
-Write-Host "Done! Your build is zipped at $ZipFile"
+Write-Host "--- FINISHED ---"
+Write-Host "Your build is ready at: $ZipFile"
