@@ -4,9 +4,8 @@ param (
     [string]$OutputPath = "$HOME\Downloads" 
 )
 
-# 1. FIND THE ENGINE (Now with 3-way Auto-Detect)
 Write-Host "Searching for Unreal Engine 5.6..."
-$UE_PATH = ""
+$UE_PATH = "C:\Program Files\Epic Games\5.6\Engine\Build\BatchFiles\RunUAT.bat"
 $RegPaths = @(
     "HKLM:\SOFTWARE\EpicGames\Unreal Engine\5.6",
     "HKCU:\Software\Epic Games\Unreal Engine\Builds"
@@ -27,8 +26,6 @@ if (-not (Test-Path $UE_PATH)) {
     exit 1
 }
 
-# 2. RESOLVE PROJECT
-# Finds the .uproject file automatically in the root of your repo
 $PROJECT_FILE = Get-ChildItem -Path "$PSScriptRoot\..\..\*.uproject" | Select-Object -First 1
 if (-not $PROJECT_FILE) { Write-Error "No .uproject file found!"; exit 1 }
 
