@@ -1,20 +1,39 @@
+name: UE5.6 Manual Build (School Mode)
+
 on:
   workflow_dispatch:
     inputs:
       build_name:
-        description: 'Build Name'
-        default: 'Week-3-Build'
-      output_path:
-        description: 'Where to save (On the Runner machine)'
-        default: 'C:\Users\Student\Desktop\MyBuilds'
+        description: 'Name of this week’s build'
+        required: true
+        default: 'Weekly-Build'
+      # We set the default to the standard Windows Downloads path string
+      custom_output:
+        description: 'Custom Output Path (Leave blank for Downloads)'
+        required: false
+        default: 'DEFAULT'
 
 jobs:
-  build:
-    runs-on: self-hosted
+  build-windows:
+    # This matches the "Label" you give your school PC when setting up the runner
+    runs-on: self-hosted 
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Build
+      - name: Checkout Project Code
+        uses: actions/checkout@v4
+        with:
+          lfs: true # Essential for Unreal textures/meshes
+
+      - name: Execute Unreal Build Script
+        shell: powershell
         run: |
+          # Logic to handle the "Default" downloads folder vs a custom path
+          $OutPath = "${{ github.event.inputs.custom_output }}"
+          if ($OutPath -eq "DEFAULT") {
+              $OutPath = "$HOME\Downloads"
+          }
+
+          # Run the script with Bypass to get around School IT restrictions
           powershell -ExecutionPolicy Bypass -File .github/scripts/build.ps1 `
-          -BuildName "${{ github.event.inputs.build_name }}" `
-          -OutputPath "${{ github.event.inputs.output_path }}"
+            -BuildName "${{ github.event.inputs.build_name }}" `
+            -OutputPath $OutPath
