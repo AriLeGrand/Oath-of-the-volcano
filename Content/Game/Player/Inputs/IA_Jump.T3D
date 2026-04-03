@@ -1,0 +1,12 @@
+Begin Object Class=/Script/EnhancedInput.InputAction Name="IA_Jump" ExportPath="/Script/EnhancedInput.InputAction'/Game/Input/Actions/IA_Jump.IA_Jump'"
+   Begin Object Class=/Script/EnhancedInput.InputTriggerPressed Name="InputTriggerPressed_0" ExportPath="/Script/EnhancedInput.InputTriggerPressed'/Game/Input/Actions/IA_Jump.IA_Jump:InputTriggerPressed_0'"
+   End Object
+   Begin Object Class=/Script/EnhancedInput.InputTriggerReleased Name="InputTriggerReleased_0" ExportPath="/Script/EnhancedInput.InputTriggerReleased'/Game/Input/Actions/IA_Jump.IA_Jump:InputTriggerReleased_0'"
+   End Object
+   Begin Object Name="InputTriggerPressed_0" ExportPath="/Script/EnhancedInput.InputTriggerPressed'/Game/Input/Actions/IA_Jump.IA_Jump:InputTriggerPressed_0'"
+   End Object
+   Begin Object Name="InputTriggerReleased_0" ExportPath="/Script/EnhancedInput.InputTriggerReleased'/Game/Input/Actions/IA_Jump.IA_Jump:InputTriggerReleased_0'"
+   End Object
+   Triggers(0)="/Script/EnhancedInput.InputTriggerPressed'InputTriggerPressed_0'"
+   Triggers(1)="/Script/EnhancedInput.InputTriggerReleased'InputTriggerReleased_0'"
+End Object
