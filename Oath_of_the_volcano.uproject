@@ -3,16 +3,7 @@
 	"EngineAssociation": "5.6",
 	"Category": "",
 	"Description": "",
-	"Modules": [
-		{
-			"Name": "Oath_of_the_volcano",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
-		}
-	],
+	"Modules": [],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
