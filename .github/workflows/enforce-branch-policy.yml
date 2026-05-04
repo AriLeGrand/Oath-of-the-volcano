@@ -1,0 +1,18 @@
+name: Enforce Branch Policy
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  enforce_branch_origin:
+    name: Enforce Branch Policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch origin
+        run: |
+          if [[ "$GITHUB_HEAD_REF" != "dev" ]]; then
+            echo "Pull requests to main must originate from develop branch";
+            exit 1;
+          fi
